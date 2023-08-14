@@ -1,19 +1,24 @@
-const {GuildMember, ApplicationCommandOptionType} = require('discord.js');
-const {QueryType, useMainPlayer} = require('discord-player');
-const {isInVoiceChannel} = require("../utils/voicechannel");
+const { GuildMember, ApplicationCommandOptionType } = require('discord.js');
+const { QueryType, useMainPlayer } = require('discord-player');
+const { isInVoiceChannel } = require("../utils/voicechannel");
 
 module.exports = {
     name: 'play',
-    description: 'Play a song in your channel!',
+    description: 'Tocar musica!',
     options: [
         {
             name: 'query',
             type: ApplicationCommandOptionType.String,
-            description: 'The song you want to play',
+            description: 'A musica que você quer ouvir',
             required: true,
         },
     ],
     async execute(interaction) {
+        console.log(interaction.user.username)
+        // if (interaction.user.username === "yagoamorim") {
+        //     await interaction.reply("Pegue essa playlist e aprenda a ter um bom gosto ! \n https://open.spotify.com/playlist/0osMdYiMMIMFxaYkJoHmAA?si=b15d74783e7049cb");
+        //     return;
+        // } else {
         try {
             const inVoiceChannel = isInVoiceChannel(interaction)
             if (!inVoiceChannel) {
@@ -26,7 +31,7 @@ module.exports = {
             const query = interaction.options.getString('query');
             const searchResult = await player.search(query)
             if (!searchResult.hasTracks())
-                return void interaction.followUp({content: 'No results were found!'});
+                return void interaction.followUp({ content: 'Nada encontrado aqui!' });
 
             try {
                 const res = await player.play(interaction.member.voice.channel.id, searchResult, {
@@ -45,19 +50,21 @@ module.exports = {
                     }
                 });
 
-                await interaction.followUp({
-                    content: `⏱ | Loading your ${searchResult.playlist ? 'playlist' : 'track'}...`,
-                });
+ 
+                    await interaction.followUp({
+                        content: `⏱ | Carregando sua ${searchResult.playlist ? 'playlist' : 'fila'}...`,
+                    });
             } catch (error) {
                 await interaction.editReply({
-                    content: 'An error has occurred!'
+                    content: 'Um erro aconteceu!'
                 })
                 return console.log(error);
             }
         } catch (error) {
             await interaction.reply({
-                content: 'There was an error trying to execute that command: ' + error.message,
+                content: 'Aconteceu um erro ao tentar reproduzir sua musica: ' + error.message,
             });
         }
+        // }
     },
 };

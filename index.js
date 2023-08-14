@@ -83,7 +83,7 @@ player.events.on('playerError', (queue, error) => {
 });*/
 
 client.on('ready', function () {
-    console.log('Ready!');
+    console.log('Pronto para uso!');
     client.user.presence.set({
         activities: [{name: config.activity, type: Number(config.activityType)}],
         status: Discord.Status.Ready
